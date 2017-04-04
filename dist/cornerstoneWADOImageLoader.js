@@ -1,4 +1,4 @@
-/*! cornerstone-wado-image-loader - 0.14.6 - 2017-06-08 | (c) 2016 Chris Hafey | https://github.com/chafey/cornerstoneWADOImageLoader */
+/*! cornerstone-wado-image-loader - 0.14.6 - 2017-06-09 | (c) 2016 Chris Hafey | https://github.com/chafey/cornerstoneWADOImageLoader */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("jquery"), require("cornerstone-core"), require("dicom-parser"));
@@ -105,7 +105,7 @@ var _xhrRequest = __webpack_require__(46);
 
 var _xhrRequest2 = _interopRequireDefault(_xhrRequest);
 
-var _options = __webpack_require__(19);
+var _options = __webpack_require__(8);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -227,11 +227,11 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _getImageFrame = __webpack_require__(14);
+var _getImageFrame = __webpack_require__(15);
 
 var _getImageFrame2 = _interopRequireDefault(_getImageFrame);
 
-var _decodeImageFrame = __webpack_require__(12);
+var _decodeImageFrame = __webpack_require__(13);
 
 var _decodeImageFrame2 = _interopRequireDefault(_decodeImageFrame);
 
@@ -239,13 +239,9 @@ var _isColorImage = __webpack_require__(16);
 
 var _isColorImage2 = _interopRequireDefault(_isColorImage);
 
-var _convertColorSpace = __webpack_require__(11);
+var _convertColorSpace = __webpack_require__(12);
 
 var _convertColorSpace2 = _interopRequireDefault(_convertColorSpace);
-
-var _getMinMax = __webpack_require__(15);
-
-var _getMinMax2 = _interopRequireDefault(_getMinMax);
 
 var _isJPEGBaseline8BitColor = __webpack_require__(17);
 
@@ -366,14 +362,6 @@ function createImage(imageId, pixelData, transferSyntax, options) {
       image.render = cornerstone.renderGrayscaleImage;
     }
 
-    // calculate min/max if not supplied
-    if (image.minPixelValue === undefined || image.maxPixelValue === undefined) {
-      var minMax = (0, _getMinMax2.default)(imageFrame.pixelData);
-
-      image.minPixelValue = minMax.min;
-      image.maxPixelValue = minMax.max;
-    }
-
     // Modality LUT
     if (modalityLutModule.modalityLUTSequence && modalityLutModule.modalityLUTSequence.length > 0 && isModalityLUTForDisplay(sopCommonModule.sopClassUID)) {
       image.modalityLUT = modalityLutModule.modalityLUTSequence[0];
@@ -415,6 +403,36 @@ exports.default = createImage;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.setOptions = setOptions;
+exports.getOptions = getOptions;
+var options = {
+  // callback allowing customization of the xhr (e.g. adding custom auth headers, cors, etc)
+  beforeSend: function beforeSend() /* xhr */{},
+
+  // callback allowing modification of newly created image objects
+  imageCreated: function imageCreated() /* image */{},
+
+  strict: true
+};
+
+function setOptions(newOptions) {
+  options = newOptions;
+}
+
+function getOptions() {
+  return options;
+}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 
 var imageIds = [];
@@ -443,7 +461,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -577,7 +595,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -635,7 +653,7 @@ Object.defineProperty(exports, 'convertPALETTECOLOR', {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -646,7 +664,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = convertColorSpace;
 
-var _colorSpaceConverters = __webpack_require__(10);
+var _colorSpaceConverters = __webpack_require__(11);
 
 function convertRGB(imageFrame, rgbaBuffer) {
   if (imageFrame.planarConfiguration === 0) {
@@ -686,7 +704,7 @@ function convertColorSpace(imageFrame, imageData) {
 }
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -700,7 +718,7 @@ var _webWorkerManager = __webpack_require__(18);
 
 var _webWorkerManager2 = _interopRequireDefault(_webWorkerManager);
 
-var _decodeJPEGBaseline8BitColor = __webpack_require__(13);
+var _decodeJPEGBaseline8BitColor = __webpack_require__(14);
 
 var _decodeJPEGBaseline8BitColor2 = _interopRequireDefault(_decodeJPEGBaseline8BitColor);
 
@@ -789,7 +807,7 @@ function decodeImageFrame(imageFrame, transferSyntax, pixelData, canvas, options
 exports.default = decodeImageFrame;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -876,7 +894,7 @@ function decodeJPEGBaseline8BitColor(imageFrame, pixelData, canvas) {
 exports.default = decodeJPEGBaseline8BitColor;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -916,38 +934,6 @@ function getImageFrame(imageId) {
 }
 
 exports.default = getImageFrame;
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = getMinMax;
-function getMinMax(storedPixelData) {
-  // we always calculate the min max values since they are not always
-  // present in DICOM and we don't want to trust them anyway as cornerstone
-  // depends on us providing reliable values for these
-  var min = storedPixelData[0];
-  var max = storedPixelData[0];
-  var storedPixel = void 0;
-  var numPixels = storedPixelData.length;
-
-  for (var index = 0; index < numPixels; index++) {
-    storedPixel = storedPixelData[index];
-    min = Math.min(min, storedPixel);
-    max = Math.max(max, storedPixel);
-  }
-
-  return {
-    min: min,
-    max: max
-  };
-}
 
 /***/ }),
 /* 16 */
@@ -999,6 +985,8 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _options = __webpack_require__(8);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // the taskId to assign to the next task added via addTask()
@@ -1010,6 +998,9 @@ var tasks = [];
 // array of web workers to dispatch decode tasks to
 var webWorkers = [];
 
+// The options for CornerstoneWADOImageLoader
+var options = (0, _options.getOptions)();
+
 var defaultConfig = {
   maxWebWorkers: navigator.hardwareConcurrency || 1,
   startWebWorkersOnDemand: true,
@@ -1020,7 +1011,8 @@ var defaultConfig = {
       loadCodecsOnStartup: true,
       initializeCodecsOnStartup: false,
       codecsPath: '../dist/cornerstoneWADOImageLoaderCodecs.js',
-      usePDFJS: false
+      usePDFJS: false,
+      strict: options.strict
     }
   }
 };
@@ -1322,34 +1314,6 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setOptions = setOptions;
-exports.getOptions = getOptions;
-var options = {
-  // callback allowing customization of the xhr (e.g. adding custom auth headers, cors, etc)
-  beforeSend: function beforeSend() /* xhr */{},
-
-  // callback allowing modification of newly created image objects
-  imageCreated: function imageCreated() /* image */{}
-};
-
-function setOptions(newOptions) {
-  options = newOptions;
-}
-
-function getOptions() {
-  return options;
-}
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 function checkToken(token, data, dataOffset) {
 
   if (dataOffset + token.length > data.length) {
@@ -1397,7 +1361,7 @@ function findIndexOfString(data, str, offset) {
 exports.default = findIndexOfString;
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1413,7 +1377,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 var _internal = __webpack_require__(2);
 
-var _findIndexOfString = __webpack_require__(20);
+var _findIndexOfString = __webpack_require__(19);
 
 var _findIndexOfString2 = _interopRequireDefault(_findIndexOfString);
 
@@ -1507,7 +1471,7 @@ function getPixelData(uri, imageId, mediaType) {
 exports.default = getPixelData;
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1536,7 +1500,7 @@ function getNumberValue(element, index) {
 exports.default = getNumberValue;
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1579,7 +1543,7 @@ function getNumberValues(element, minimumLength) {
 exports.default = getNumberValues;
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1616,7 +1580,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1662,7 +1626,7 @@ function getEncapsulatedImageFrame(dataSet, frameIndex) {
 }
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1672,7 +1636,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _unpackBinaryFrame = __webpack_require__(32);
+var _unpackBinaryFrame = __webpack_require__(31);
 
 var _unpackBinaryFrame2 = _interopRequireDefault(_unpackBinaryFrame);
 
@@ -1723,7 +1687,7 @@ function getUncompressedImageFrame(dataSet, frameIndex) {
 exports.default = getUncompressedImageFrame;
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1741,7 +1705,7 @@ var _parseImageId = __webpack_require__(5);
 
 var _parseImageId2 = _interopRequireDefault(_parseImageId);
 
-var _fileManager = __webpack_require__(24);
+var _fileManager = __webpack_require__(23);
 
 var _fileManager2 = _interopRequireDefault(_fileManager);
 
@@ -1770,7 +1734,7 @@ function loadFileRequest(uri) {
 exports.default = loadFileRequest;
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1856,7 +1820,7 @@ function getImagePixelModule(dataSet) {
 exports.default = getImagePixelModule;
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1922,7 +1886,7 @@ function getLUTs(pixelRepresentation, lutSequence) {
 exports.default = getLUTs;
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1982,7 +1946,7 @@ function getModalityLUTOutputPixelRepresentation(dataSet) {
 exports.default = getModalityLUTOutputPixelRepresentation;
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2013,7 +1977,7 @@ function getNumberValues(dataSet, tag, minimumLength) {
 exports.default = getNumberValues;
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2055,9 +2019,9 @@ function unpackBinaryFrame(byteArray, frameOffset, pixelsPerFrame) {
 exports.default = unpackBinaryFrame;
 
 /***/ }),
+/* 32 */,
 /* 33 */,
-/* 34 */,
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2076,6 +2040,38 @@ function configure(options) {
 exports.default = configure;
 
 /***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = getMinMax;
+function getMinMax(storedPixelData) {
+  // we always calculate the min max values since they are not always
+  // present in DICOM and we don't want to trust them anyway as cornerstone
+  // depends on us providing reliable values for these
+  var min = storedPixelData[0];
+  var max = storedPixelData[0];
+  var storedPixel = void 0;
+  var numPixels = storedPixelData.length;
+
+  for (var index = 0; index < numPixels; index++) {
+    storedPixel = storedPixelData[index];
+    min = Math.min(min, storedPixel);
+    max = Math.max(max, storedPixel);
+  }
+
+  return {
+    min: min,
+    max: max
+  };
+}
+
+/***/ }),
 /* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2088,15 +2084,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _metaData = __webpack_require__(49);
 
-var _findIndexOfString = __webpack_require__(20);
+var _findIndexOfString = __webpack_require__(19);
 
 var _findIndexOfString2 = _interopRequireDefault(_findIndexOfString);
 
-var _getPixelData = __webpack_require__(21);
+var _getPixelData = __webpack_require__(20);
 
 var _getPixelData2 = _interopRequireDefault(_getPixelData);
 
-var _metaDataManager = __webpack_require__(8);
+var _metaDataManager = __webpack_require__(9);
 
 var _metaDataManager2 = _interopRequireDefault(_metaDataManager);
 
@@ -2135,23 +2131,23 @@ Object.defineProperty(exports, "__esModule", {
 
 var _metaData = __webpack_require__(52);
 
-var _dataSetCacheManager = __webpack_require__(9);
+var _dataSetCacheManager = __webpack_require__(10);
 
 var _dataSetCacheManager2 = _interopRequireDefault(_dataSetCacheManager);
 
-var _fileManager = __webpack_require__(24);
+var _fileManager = __webpack_require__(23);
 
 var _fileManager2 = _interopRequireDefault(_fileManager);
 
-var _getEncapsulatedImageFrame = __webpack_require__(25);
+var _getEncapsulatedImageFrame = __webpack_require__(24);
 
 var _getEncapsulatedImageFrame2 = _interopRequireDefault(_getEncapsulatedImageFrame);
 
-var _getUncompressedImageFrame = __webpack_require__(26);
+var _getUncompressedImageFrame = __webpack_require__(25);
 
 var _getUncompressedImageFrame2 = _interopRequireDefault(_getUncompressedImageFrame);
 
-var _loadFileRequest = __webpack_require__(27);
+var _loadFileRequest = __webpack_require__(26);
 
 var _loadFileRequest2 = _interopRequireDefault(_loadFileRequest);
 
@@ -2163,7 +2159,7 @@ var _parseImageId = __webpack_require__(5);
 
 var _parseImageId2 = _interopRequireDefault(_parseImageId);
 
-var _unpackBinaryFrame = __webpack_require__(32);
+var _unpackBinaryFrame = __webpack_require__(31);
 
 var _unpackBinaryFrame2 = _interopRequireDefault(_unpackBinaryFrame);
 
@@ -2383,7 +2379,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _colorSpaceConverters = __webpack_require__(10);
+var _colorSpaceConverters = __webpack_require__(11);
 
 Object.keys(_colorSpaceConverters).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -2413,7 +2409,7 @@ Object.defineProperty(exports, 'wadors', {
   }
 });
 
-var _configure = __webpack_require__(35);
+var _configure = __webpack_require__(34);
 
 Object.defineProperty(exports, 'configure', {
   enumerable: true,
@@ -2422,7 +2418,7 @@ Object.defineProperty(exports, 'configure', {
   }
 });
 
-var _convertColorSpace = __webpack_require__(11);
+var _convertColorSpace = __webpack_require__(12);
 
 Object.defineProperty(exports, 'convertColorSpace', {
   enumerable: true,
@@ -2440,7 +2436,7 @@ Object.defineProperty(exports, 'createImage', {
   }
 });
 
-var _decodeImageFrame = __webpack_require__(12);
+var _decodeImageFrame = __webpack_require__(13);
 
 Object.defineProperty(exports, 'decodeImageFrame', {
   enumerable: true,
@@ -2449,7 +2445,7 @@ Object.defineProperty(exports, 'decodeImageFrame', {
   }
 });
 
-var _decodeJPEGBaseline8BitColor = __webpack_require__(13);
+var _decodeJPEGBaseline8BitColor = __webpack_require__(14);
 
 Object.defineProperty(exports, 'decodeJPEGBaseline8BitColor', {
   enumerable: true,
@@ -2458,7 +2454,7 @@ Object.defineProperty(exports, 'decodeJPEGBaseline8BitColor', {
   }
 });
 
-var _getImageFrame = __webpack_require__(14);
+var _getImageFrame = __webpack_require__(15);
 
 Object.defineProperty(exports, 'getImageFrame', {
   enumerable: true,
@@ -2467,7 +2463,7 @@ Object.defineProperty(exports, 'getImageFrame', {
   }
 });
 
-var _getMinMax = __webpack_require__(15);
+var _getMinMax = __webpack_require__(35);
 
 Object.defineProperty(exports, 'getMinMax', {
   enumerable: true,
@@ -2538,7 +2534,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _options = __webpack_require__(19);
+var _options = __webpack_require__(8);
 
 var _cornerstoneCore = __webpack_require__(1);
 
@@ -2622,11 +2618,11 @@ var _cornerstoneCore = __webpack_require__(1);
 
 var cornerstone = _interopRequireWildcard(_cornerstoneCore);
 
-var _metaDataManager = __webpack_require__(8);
+var _metaDataManager = __webpack_require__(9);
 
 var _metaDataManager2 = _interopRequireDefault(_metaDataManager);
 
-var _getPixelData = __webpack_require__(21);
+var _getPixelData = __webpack_require__(20);
 
 var _getPixelData2 = _interopRequireDefault(_getPixelData);
 
@@ -2745,7 +2741,7 @@ Object.defineProperty(exports, 'getNumberString', {
   }
 });
 
-var _getNumberValue = __webpack_require__(22);
+var _getNumberValue = __webpack_require__(21);
 
 Object.defineProperty(exports, 'getNumberValue', {
   enumerable: true,
@@ -2754,7 +2750,7 @@ Object.defineProperty(exports, 'getNumberValue', {
   }
 });
 
-var _getNumberValues = __webpack_require__(23);
+var _getNumberValues = __webpack_require__(22);
 
 Object.defineProperty(exports, 'getNumberValues', {
   enumerable: true,
@@ -2794,7 +2790,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _getNumberValues = __webpack_require__(23);
+var _getNumberValues = __webpack_require__(22);
 
 var _getNumberValues2 = _interopRequireDefault(_getNumberValues);
 
@@ -2802,11 +2798,11 @@ var _getValue = __webpack_require__(4);
 
 var _getValue2 = _interopRequireDefault(_getValue);
 
-var _getNumberValue = __webpack_require__(22);
+var _getNumberValue = __webpack_require__(21);
 
 var _getNumberValue2 = _interopRequireDefault(_getNumberValue);
 
-var _metaDataManager = __webpack_require__(8);
+var _metaDataManager = __webpack_require__(9);
 
 var _metaDataManager2 = _interopRequireDefault(_metaDataManager);
 
@@ -2953,19 +2949,19 @@ var _parseImageId = __webpack_require__(5);
 
 var _parseImageId2 = _interopRequireDefault(_parseImageId);
 
-var _dataSetCacheManager = __webpack_require__(9);
+var _dataSetCacheManager = __webpack_require__(10);
 
 var _dataSetCacheManager2 = _interopRequireDefault(_dataSetCacheManager);
 
-var _getEncapsulatedImageFrame = __webpack_require__(25);
+var _getEncapsulatedImageFrame = __webpack_require__(24);
 
 var _getEncapsulatedImageFrame2 = _interopRequireDefault(_getEncapsulatedImageFrame);
 
-var _getUncompressedImageFrame = __webpack_require__(26);
+var _getUncompressedImageFrame = __webpack_require__(25);
 
 var _getUncompressedImageFrame2 = _interopRequireDefault(_getUncompressedImageFrame);
 
-var _loadFileRequest = __webpack_require__(27);
+var _loadFileRequest = __webpack_require__(26);
 
 var _loadFileRequest2 = _interopRequireDefault(_loadFileRequest);
 
@@ -3063,7 +3059,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _getImagePixelModule = __webpack_require__(28);
+var _getImagePixelModule = __webpack_require__(27);
 
 Object.defineProperty(exports, 'getImagePixelModule', {
   enumerable: true,
@@ -3072,7 +3068,7 @@ Object.defineProperty(exports, 'getImagePixelModule', {
   }
 });
 
-var _getLUTs = __webpack_require__(29);
+var _getLUTs = __webpack_require__(28);
 
 Object.defineProperty(exports, 'getLUTs', {
   enumerable: true,
@@ -3081,7 +3077,7 @@ Object.defineProperty(exports, 'getLUTs', {
   }
 });
 
-var _getModalityLUTOutputPixelRepresentation = __webpack_require__(30);
+var _getModalityLUTOutputPixelRepresentation = __webpack_require__(29);
 
 Object.defineProperty(exports, 'getModalityLUTOutputPixelRepresentation', {
   enumerable: true,
@@ -3090,7 +3086,7 @@ Object.defineProperty(exports, 'getModalityLUTOutputPixelRepresentation', {
   }
 });
 
-var _getNumberValues = __webpack_require__(31);
+var _getNumberValues = __webpack_require__(30);
 
 Object.defineProperty(exports, 'getNumberValues', {
   enumerable: true,
@@ -3121,7 +3117,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _getNumberValues = __webpack_require__(31);
+var _getNumberValues = __webpack_require__(30);
 
 var _getNumberValues2 = _interopRequireDefault(_getNumberValues);
 
@@ -3129,19 +3125,19 @@ var _parseImageId = __webpack_require__(5);
 
 var _parseImageId2 = _interopRequireDefault(_parseImageId);
 
-var _dataSetCacheManager = __webpack_require__(9);
+var _dataSetCacheManager = __webpack_require__(10);
 
 var _dataSetCacheManager2 = _interopRequireDefault(_dataSetCacheManager);
 
-var _getImagePixelModule = __webpack_require__(28);
+var _getImagePixelModule = __webpack_require__(27);
 
 var _getImagePixelModule2 = _interopRequireDefault(_getImagePixelModule);
 
-var _getLUTs = __webpack_require__(29);
+var _getLUTs = __webpack_require__(28);
 
 var _getLUTs2 = _interopRequireDefault(_getLUTs);
 
-var _getModalityLUTOutputPixelRepresentation = __webpack_require__(30);
+var _getModalityLUTOutputPixelRepresentation = __webpack_require__(29);
 
 var _getModalityLUTOutputPixelRepresentation2 = _interopRequireDefault(_getModalityLUTOutputPixelRepresentation);
 

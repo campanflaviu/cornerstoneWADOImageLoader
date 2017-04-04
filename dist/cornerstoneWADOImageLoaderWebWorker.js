@@ -1,4 +1,4 @@
-/*! cornerstone-wado-image-loader - 0.14.6 - 2017-06-08 | (c) 2016 Chris Hafey | https://github.com/chafey/cornerstoneWADOImageLoader */
+/*! cornerstone-wado-image-loader - 0.14.6 - 2017-06-09 | (c) 2016 Chris Hafey | https://github.com/chafey/cornerstoneWADOImageLoader */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -92,7 +92,7 @@ exports.default = '0.14.6';
 
 /***/ }),
 
-/***/ 33:
+/***/ 32:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -263,7 +263,7 @@ exports.initializeJPEG2000 = initializeJPEG2000;
 
 /***/ }),
 
-/***/ 34:
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -388,9 +388,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _decodeJPEG = __webpack_require__(33);
+var _decodeJPEG = __webpack_require__(32);
 
-var _decodeJPEGLS = __webpack_require__(34);
+var _decodeJPEGLS = __webpack_require__(33);
 
 var _getMinMax = __webpack_require__(60);
 
@@ -444,14 +444,20 @@ function decodeTaskInitialize(config) {
 }
 
 function calculateMinMax(imageFrame) {
-  if (imageFrame.smallestPixelValue !== undefined && imageFrame.largestPixelValue !== undefined) {
-    return;
-  }
-
   var minMax = (0, _getMinMax2.default)(imageFrame.pixelData);
 
-  imageFrame.smallestPixelValue = minMax.min;
-  imageFrame.largestPixelValue = minMax.max;
+  if (decodeConfig.decodeTask.strict === true) {
+    if (imageFrame.smallestPixelValue !== minMax.min) {
+      console.warn('Image smallestPixelValue tag is incorrect. Rendering performance will suffer considerably.');
+    }
+
+    if (imageFrame.largestPixelValue !== minMax.max) {
+      console.warn('Image largestPixelValue tag is incorrect. Rendering performance will suffer considerably.');
+    }
+  } else {
+    imageFrame.smallestPixelValue = minMax.min;
+    imageFrame.largestPixelValue = minMax.max;
+  }
 }
 
 /**
@@ -646,11 +652,11 @@ var _decodeJPEGLossless = __webpack_require__(57);
 
 var _decodeJPEGLossless2 = _interopRequireDefault(_decodeJPEGLossless);
 
-var _decodeJPEGLS = __webpack_require__(34);
+var _decodeJPEGLS = __webpack_require__(33);
 
 var _decodeJPEGLS2 = _interopRequireDefault(_decodeJPEGLS);
 
-var _decodeJPEG = __webpack_require__(33);
+var _decodeJPEG = __webpack_require__(32);
 
 var _decodeJPEG2 = _interopRequireDefault(_decodeJPEG);
 

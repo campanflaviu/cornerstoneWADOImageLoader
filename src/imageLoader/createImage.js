@@ -3,7 +3,6 @@ import getImageFrame from './getImageFrame';
 import decodeImageFrame from './decodeImageFrame';
 import { default as isColorImageFn } from './isColorImage';
 import convertColorSpace from './convertColorSpace';
-import getMinMax from './getMinMax';
 import isJPEGBaseline8BitColor from './isJPEGBaseline8BitColor';
 import * as cornerstone from 'cornerstone-core';
 
@@ -111,14 +110,6 @@ function createImage (imageId, pixelData, transferSyntax, options) {
 
     } else {
       image.render = cornerstone.renderGrayscaleImage;
-    }
-
-    // calculate min/max if not supplied
-    if (image.minPixelValue === undefined || image.maxPixelValue === undefined) {
-      const minMax = getMinMax(imageFrame.pixelData);
-
-      image.minPixelValue = minMax.min;
-      image.maxPixelValue = minMax.max;
     }
 
     // Modality LUT

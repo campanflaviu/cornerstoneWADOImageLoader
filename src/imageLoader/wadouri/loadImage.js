@@ -66,22 +66,34 @@ function getLoaderForScheme (scheme) {
   }
 }
 
-function loadImage (imageId, options) {
+/**
+ * Load an imageId
+ *
+ * @param {String} imageId
+ * @param {Object} options
+ * @return {*}
+ */
+export default function loadImage (imageId, options) {
   const parsedImageId = parseImageId(imageId);
-  const loader = getLoaderForScheme(parsedImageId.scheme);
+  const url = parsedImageId.url;
+  let dataSet;
 
   // if the dataset for this url is already loaded, use it
-  if (dataSetCacheManager.isLoaded(parsedImageId.url)) {
-    return loadImageFromPromise(dataSetCacheManager.load(parsedImageId.url, loader, imageId), imageId, parsedImageId.frame, parsedImageId.url, options);
+  if (dataSetCacheManager.isLoaded(url)) {
+    dataSet = dataSetCacheManager.get(url);
+
+    return loadImageFromPromise(dataSet, imageId, parsedImageId.frame, url, options);
   }
 
   // load the dataSet via the dataSetCacheManager
-  return loadImageFromPromise(dataSetCacheManager.load(parsedImageId.url, loader, imageId), imageId, parsedImageId.frame, parsedImageId.url, options);
+  const loader = getLoaderForScheme(parsedImageId.scheme);
+
+  dataSet = dataSetCacheManager.load(url, loader, imageId);
+
+  return loadImageFromPromise(dataSet, imageId, parsedImageId.frame, url, options);
 }
 
 // register dicomweb and wadouri image loader prefixes
 cornerstone.registerImageLoader('dicomweb', loadImage);
 cornerstone.registerImageLoader('wadouri', loadImage);
 cornerstone.registerImageLoader('dicomfile', loadImage);
-
-export default loadImage;

@@ -3,9 +3,10 @@ import unpackBinaryFrame from './unpackBinaryFrame';
 /**
  * Function to deal with extracting an image frame from an encapsulated data set.
  *
- * @param dataSet
- * @param frameIndex
+ * @param {DataSet} dataSet
+ * @param {Number} frameIndex
  * @return {*}
+ * @throws If the specified frameIndex is outside the byte array
  */
 export default function (dataSet, frameIndex) {
   const pixelDataElement = dataSet.elements.x7fe00010;

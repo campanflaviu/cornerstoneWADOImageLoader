@@ -20,7 +20,7 @@ function isBitSet (byte, bitPos) {
  *
  * @return {Uint8Array}
  */
-function unpackBinaryFrame (byteArray, frameOffset, pixelsPerFrame) {
+export default function (byteArray, frameOffset, pixelsPerFrame) {
   // Create a new pixel array given the image size
   const pixelData = new Uint8Array(pixelsPerFrame);
 
@@ -40,5 +40,3 @@ function unpackBinaryFrame (byteArray, frameOffset, pixelsPerFrame) {
 
   return pixelData;
 }
-
-export default unpackBinaryFrame;

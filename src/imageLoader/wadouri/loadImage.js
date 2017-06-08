@@ -8,7 +8,11 @@ import getUncompressedImageFrame from './getUncompressedImageFrame';
 import loadFileRequest from './loadFileRequest';
 import { xhrRequest } from '../internal';
 
-// add a decache callback function to clear out our dataSetCacheManager
+/**
+ * Add a decache callback function to clear out our dataSetCacheManager
+ *
+ * @param {Image} image
+ */
 function addDecache (image) {
   image.decache = function () {
     // console.log('decache');
@@ -18,6 +22,12 @@ function addDecache (image) {
   };
 }
 
+/**
+ *
+ * @param {DataSet} dataSet
+ * @param {Number} frameIndex
+ * @return {*}
+ */
 function getPixelData (dataSet, frameIndex) {
   const pixelDataElement = dataSet.elements.x7fe00010;
 
@@ -29,7 +39,15 @@ function getPixelData (dataSet, frameIndex) {
 
 }
 
-function loadImageFromPromise (dataSetPromise, imageId, frame, sharedCacheKey, options) {
+/**
+ *
+ * @param dataSetPromise
+ * @param imageId
+ * @param frame
+ * @param options
+ * @return {*}
+ */
+function loadImageFromPromise (dataSetPromise, imageId, frame, options) {
 
   const start = new Date().getTime();
 
@@ -58,6 +76,11 @@ function loadImageFromPromise (dataSetPromise, imageId, frame, sharedCacheKey, o
   return deferred;
 }
 
+/**
+ *
+ * @param {String} scheme
+ * @return {*}
+ */
 function getLoaderForScheme (scheme) {
   if (scheme === 'dicomweb' || scheme === 'wadouri') {
     return xhrRequest;
@@ -82,7 +105,7 @@ export default function loadImage (imageId, options) {
   if (dataSetCacheManager.isLoaded(url)) {
     dataSet = dataSetCacheManager.get(url);
 
-    return loadImageFromPromise(dataSet, imageId, parsedImageId.frame, url, options);
+    return loadImageFromPromise(dataSet, imageId, parsedImageId.frame, options);
   }
 
   // load the dataSet via the dataSetCacheManager
@@ -90,7 +113,7 @@ export default function loadImage (imageId, options) {
 
   dataSet = dataSetCacheManager.load(url, loader, imageId);
 
-  return loadImageFromPromise(dataSet, imageId, parsedImageId.frame, url, options);
+  return loadImageFromPromise(dataSet, imageId, parsedImageId.frame, options);
 }
 
 // register dicomweb and wadouri image loader prefixes
